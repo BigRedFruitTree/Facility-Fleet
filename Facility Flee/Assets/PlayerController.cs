@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
     public float lookSpeed = 2f;
     public float lookXLimit = 45f;
 
+    private Rigidbody playerRb;
+
     Vector3 moveDirection = Vector3.zero;
     float rotationX = 0;
 
@@ -29,7 +31,10 @@ public class PlayerController : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        playerRb = GetComponent<Rigidbody>();
     }
+
+
 
     // Update is called once per frame
     void Update()
@@ -46,6 +51,12 @@ public class PlayerController : MonoBehaviour
         float movementDirectionY = moveDirection.y;
         moveDirection = (forward * curSpeedX) + (right * curSpeedY);
         #endregion
+        
+        if (Input.GetKey(KeyCode.Q))
+        {
+            playerRb.AddForce(Vector3.forward * 100, ForceMode.Impulse);
+        }
+
 
         #region Handles Jumping
         if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
