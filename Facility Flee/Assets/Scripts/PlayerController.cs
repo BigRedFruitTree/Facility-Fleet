@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
 
     public Camera playerCamera;
     public float walkSpeed = 6f;
-    public float runSpeed = 12f;
+    public float dashSpeed = 12f;
     public float jumpPower = 7f;
     public float gravity = 10f;
 
@@ -51,10 +51,10 @@ public class PlayerController : MonoBehaviour
         float movementDirectionY = moveDirection.y;
         moveDirection = (forward * curSpeedX) + (right * curSpeedY);
         #endregion
-        
-        if (Input.GetKey(KeyCode.Q))
+
+        if (Input.GetKey(KeyCode.E) && characterController.isGrounded)
         {
-            playerRb.AddForce(Vector3.forward * 100, ForceMode.Impulse);
+            playerRb.AddForce(playerCamera.transform.forward * dashSpeed * Time.deltaTime, ForceMode.Impulse);
         }
 
 
