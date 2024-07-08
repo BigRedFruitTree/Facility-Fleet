@@ -20,13 +20,14 @@ public class PlayerController : MonoBehaviour
     private float camZRotRange = 2;
     private float camZRotSpeedFull = 0.03f;
 
-    private int dashLim = 3;
-    private int curDashes = 3;
-    private float dashDist = 50;
+    public int dashLimit = 1;
+    private int currentDashes;
+    public float dashDistance = 50;
 
     // Start is called before the first frame update
     void Start()
     {
+        currentDashes = dashLimit;
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         plrRb = GetComponent<Rigidbody>();
@@ -131,16 +132,16 @@ public class PlayerController : MonoBehaviour
 
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftShift) && curDashes > 0 && !isGrounded())
+        if (Input.GetKeyDown(KeyCode.LeftShift) && currentDashes > 0 && !isGrounded())
         {
-            curDashes--;
+            currentDashes--;
             cam.GetComponent<Camera>().fieldOfView = 120;
-            plrRb.velocity = cam.transform.forward * dashDist;
+            plrRb.velocity = cam.transform.forward * dashDistance;
         }
 
-        if (isGrounded())
+        if (isGrounded() && !isOnWall())
         {
-            curDashes = dashLim;
+            currentDashes = dashLimit;
         }
 
 
