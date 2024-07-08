@@ -16,17 +16,18 @@ public class PlayerController : MonoBehaviour
     public float friction = 0.8f;
 
     private float camZRot = 0;
-    private float camZRotSpd = 0.02f;
-    private float camZRotRange = 1;
-    private float camZRotSpeedFull = 0.02f;
+    private float camZRotSpd = 0.03f;
+    private float camZRotRange = 2;
+    private float camZRotSpeedFull = 0.03f;
 
-    private int dashLim = 1;
-    private int curDashes = 1;
-    public float dashDistance = 50;
+    private int dashLim = 3;
+    private int curDashes = 3;
+    private float dashDist = 50;
 
     // Start is called before the first frame update
     void Start()
     {
+        characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         plrRb = GetComponent<Rigidbody>();
     }
@@ -77,7 +78,7 @@ public class PlayerController : MonoBehaviour
         Vector3 tempVel = plrRb.velocity;
         float tempYVel = tempVel.y;
 
-        if (IsGrounded())
+        if (isGrounded())
         {
             tempVel += transform.right * speed * horizontalInput;
             tempVel += transform.forward * speed * verticalInput;
@@ -85,30 +86,59 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            tempVel += transform.right * (speed / 20) * horizontalInput;
-            tempVel += transform.forward * (speed / 20) * verticalInput;
-            tempVel *= 0.99f;
+            if (!isOnWall())
+            {
+                tempVel += transform.right * (speed / 20) * horizontalInput;
+                tempVel += transform.forward * (speed / 20) * verticalInput;
+                tempVel *= 0.99f;
+            }
         }
 
         tempVel.y = tempYVel;
         plrRb.velocity = tempVel;
 
-        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded() || Input.GetKeyDown(KeyCode.Space) && isOnWall())
         {
             Vector3 setVelocity = plrRb.velocity;
-            setVelocity.y = jumpForce;
-            plrRb.velocity = setVelocity;
+            if (isOnWall() && !isGrounded())
+            {
+                if (Physics.Raycast(transform.position, transform.right, 0.6f))
+                {
+                    setVelocity = -transform.right * 20;
+                }
+                if (Physics.Raycast(transform.position, -transform.right, 0.6f))
+                {
+                    setVelocity = transform.right * 20;
+                }
+                if (Physics.Raycast(transform.position, transform.forward, 0.6f))
+                {
+                    setVelocity = -transform.forward * 20;
+                }
+                if (Physics.Raycast(transform.position, -transform.forward, 0.6f))
+                {
+                    setVelocity = transform.forward * 20;
+                }
+                transform.Translate(new Vector3(0, 1, 0));
+                setVelocity.y = jumpForce;
+                plrRb.velocity = setVelocity;
+
+            }
+            else
+            {
+                setVelocity.y = jumpForce;
+                plrRb.velocity = setVelocity;
+            }
+
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftShift) && curDashes > 0 && !IsGrounded())
+        if (Input.GetKeyDown(KeyCode.LeftShift) && curDashes > 0 && !isGrounded())
         {
             curDashes--;
-
             cam.GetComponent<Camera>().fieldOfView = 120;
-            plrRb.velocity = cam.transform.forward * dashDistance;
+            plrRb.velocity = cam.transform.forward * dashDist;
         }
 
-        if (IsGrounded())
+        if (isGrounded() || isOnWall())
         {
             curDashes = dashLim;
         }
@@ -116,15 +146,17 @@ public class PlayerController : MonoBehaviour
 
         //Set cursor lock state depending on what key is pressed
         Cursor.lockState = CursorLockMode.Locked;
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Cursor.lockState = CursorLockMode.None;
-        }
     }
 
-    bool IsGrounded()
+    bool isGrounded()
     {
         return Physics.Raycast(transform.position, Vector3.down, 1.3f);
+    }
+    bool isOnWall()
+    {
+        return Physics.Raycast(transform.position, transform.right, 0.6f) ||
+            Physics.Raycast(transform.position, -transform.right, 0.6f) ||
+            Physics.Raycast(transform.position, -transform.forward, 0.6f) ||
+            Physics.Raycast(transform.position, transform.forward, 0.6f);
     }
 }
