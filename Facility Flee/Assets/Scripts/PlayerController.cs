@@ -1,89 +1,3 @@
-/*
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class PlayerController : MonoBehaviour
-{
-
-    public Camera playerCamera;
-    public float walkSpeed = 6f;
-    public float dashSpeed = 12f;
-    public float jumpPower = 7f;
-    public float gravity = 10f;
-
-    public float lookSpeed = 2f;
-    public float lookXLimit = 45f;
-
-    private Rigidbody playerRb;
-
-    Vector3 moveDirection = Vector3.zero;
-    float rotationX = 0;
-
-    public bool canMove = true;
-
-    CharacterController characterController;
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        characterController = GetComponent<CharacterController>();
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-        playerRb = GetComponent<Rigidbody>();
-    }
-
-
-
-    // Update is called once per frame
-    void Update()
-    {
-        Vector3 forward = transform.TransformDirection(Vector3.forward);
-        Vector3 right = transform.TransformDirection(Vector3.right);
-
-        float curSpeedX = walkSpeed * Input.GetAxis("Vertical");
-        float curSpeedY = walkSpeed * Input.GetAxis("Horizontal");
-        float movementDirectionY = moveDirection.y;
-        moveDirection = (forward * curSpeedX * 10) + (right * curSpeedY * 10);
-
-
-
-        if (Input.GetKey(KeyCode.E) && characterController.isGrounded && canMove)
-        {
-            playerRb.AddForce(playerCamera.transform.forward * dashSpeed * Time.deltaTime, ForceMode.Impulse);
-        }
-
-
-        #region Handles Jumping
-        if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
-        {
-            moveDirection.y = jumpPower;
-        }
-        else
-        {
-            moveDirection.y = movementDirectionY;
-        }
-
-        if (!characterController.isGrounded)
-        {
-            moveDirection.y -= gravity * Time.deltaTime;
-        }
-        #endregion
-        #region Handles Rotation
-        characterController.Move(moveDirection * Time.deltaTime);
-
-        if (canMove)
-        {
-            rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
-            rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
-            playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
-            transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
-        }
-        #endregion
-    }
-}
-*/
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -102,17 +16,18 @@ public class PlayerController : MonoBehaviour
     public float friction = 0.8f;
 
     private float camZRot = 0;
-    private float camZRotSpd = 0.02f;
-    private float camZRotRange = 1;
-    private float camZRotSpeedFull = 0.02f;
+    private float camZRotSpd = 0.03f;
+    private float camZRotRange = 2;
+    private float camZRotSpeedFull = 0.03f;
 
-    private int dashLim = 1;
-    private int curDashes = 1;
+    private int dashLim = 3;
+    private int curDashes = 3;
     private float dashDist = 50;
 
     // Start is called before the first frame update
     void Start()
     {
+        characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         plrRb = GetComponent<Rigidbody>();
     }
@@ -171,32 +86,59 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            tempVel += transform.right * (speed / 20) * horizontalInput;
-            tempVel += transform.forward * (speed / 20) * verticalInput;
-            tempVel *= 0.99f;
+            if (!isOnWall())
+            {
+                tempVel += transform.right * (speed / 20) * horizontalInput;
+                tempVel += transform.forward * (speed / 20) * verticalInput;
+                tempVel *= 0.99f;
+            }
         }
 
         tempVel.y = tempYVel;
         plrRb.velocity = tempVel;
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded())
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded() || Input.GetKeyDown(KeyCode.Space) && isOnWall())
         {
             Vector3 setVelocity = plrRb.velocity;
-            setVelocity.y = jumpForce;
-            plrRb.velocity = setVelocity;
+            if (isOnWall() && !isGrounded())
+            {
+                if (Physics.Raycast(transform.position, transform.right, 0.6f))
+                {
+                    setVelocity = -transform.right * 20;
+                }
+                if (Physics.Raycast(transform.position, -transform.right, 0.6f))
+                {
+                    setVelocity = transform.right * 20;
+                }
+                if (Physics.Raycast(transform.position, transform.forward, 0.6f))
+                {
+                    setVelocity = -transform.forward * 20;
+                }
+                if (Physics.Raycast(transform.position, -transform.forward, 0.6f))
+                {
+                    setVelocity = transform.forward * 20;
+                }
+                transform.Translate(new Vector3(0, 1, 0));
+                setVelocity.y = jumpForce;
+                plrRb.velocity = setVelocity;
+
+            }
+            else
+            {
+                setVelocity.y = jumpForce;
+                plrRb.velocity = setVelocity;
+            }
+
         }
-        print(isGrounded());
 
         if (Input.GetKeyDown(KeyCode.LeftShift) && curDashes > 0 && !isGrounded())
         {
             curDashes--;
-            Debug.Log(curDashes);
-
             cam.GetComponent<Camera>().fieldOfView = 120;
             plrRb.velocity = cam.transform.forward * dashDist;
         }
 
-        if (isGrounded())
+        if (isGrounded() || isOnWall())
         {
             curDashes = dashLim;
         }
@@ -204,15 +146,17 @@ public class PlayerController : MonoBehaviour
 
         //Set cursor lock state depending on what key is pressed
         Cursor.lockState = CursorLockMode.Locked;
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Cursor.lockState = CursorLockMode.None;
-        }
     }
 
     bool isGrounded()
     {
         return Physics.Raycast(transform.position, Vector3.down, 1.3f);
+    }
+    bool isOnWall()
+    {
+        return Physics.Raycast(transform.position, transform.right, 0.6f) ||
+            Physics.Raycast(transform.position, -transform.right, 0.6f) ||
+            Physics.Raycast(transform.position, -transform.forward, 0.6f) ||
+            Physics.Raycast(transform.position, transform.forward, 0.6f);
     }
 }
