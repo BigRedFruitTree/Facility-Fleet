@@ -138,7 +138,7 @@ public class PlayerController : MonoBehaviour
             plrRb.velocity = cam.transform.forward * dashDist;
         }
 
-        if (isGrounded() || isOnWall())
+        if (isGrounded())
         {
             curDashes = dashLim;
         }
@@ -146,6 +146,11 @@ public class PlayerController : MonoBehaviour
 
         //Set cursor lock state depending on what key is pressed
         Cursor.lockState = CursorLockMode.Locked;
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
     }
 
     bool isGrounded()
