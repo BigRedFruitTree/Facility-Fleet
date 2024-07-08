@@ -525,6 +525,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 7712890168214377791}
   mouseSens: 5
-  speed: 5
-  jumpForce: 20
+  speed: 3
+  jumpForce: 10
   friction: 0.8
+  dashDistance: 25
