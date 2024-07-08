@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using UnityEngine.SceneManagement;
 public class TitleMenu : MonoBehaviour
 {
     public GameObject titlePanel;
@@ -22,7 +22,8 @@ public class TitleMenu : MonoBehaviour
 
     public void PlayPressed()
     {
-        // Add code to start game.
+        titlePanel.SetActive(false);
+        SceneManager.LoadScene("Level");
     }
 
     public void OptionsPressed()
