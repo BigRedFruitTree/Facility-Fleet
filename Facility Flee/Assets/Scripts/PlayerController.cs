@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     public GameObject cam;
+    public GameObject Acid;
     private CharacterController characterController;
     public float mouseSens;
     private float tarXRotation = 0;
@@ -24,6 +25,8 @@ public class PlayerController : MonoBehaviour
 
     public int wallJumpLim;
     public int curWallJumps;
+
+    public GameObject Spawn;
 
     public Slider sliderMouseSens;
     // Start is called before the first frame update
@@ -166,6 +169,14 @@ public class PlayerController : MonoBehaviour
 
         
     }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.name == "Acid") 
+        {
+            
+        }
+    }
+
 
     bool isGrounded()
     {
