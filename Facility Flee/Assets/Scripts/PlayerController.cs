@@ -34,11 +34,6 @@ public class PlayerController : MonoBehaviour
         plrRb = GetComponent<Rigidbody>();
     }
 
-    public void UpdateMouseSens(float value)
-    {
-        mouseSens = value;
-    }
-
 
 
     // Update is called once per frame
@@ -169,12 +164,7 @@ public class PlayerController : MonoBehaviour
         //Set cursor lock state depending on what key is pressed
         Cursor.lockState = CursorLockMode.Locked;
 
-        if (Input.GetKeyDown(KeyCode.LeftControl) && !isGrounded())
-        {
-            Vector3 stompVel = plrRb.velocity;
-            stompVel.y = -100;
-            plrRb.velocity = stompVel;
-        }
+        
     }
 
     bool isGrounded()
