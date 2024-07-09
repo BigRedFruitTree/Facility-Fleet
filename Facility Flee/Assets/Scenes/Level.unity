@@ -3592,9 +3592,25 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7712890168230325628, guid: fc5b91e6428c7924ea490ebfb5a138e8, type: 3}
+      propertyPath: dashDist
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 7712890168230325628, guid: fc5b91e6428c7924ea490ebfb5a138e8, type: 3}
       propertyPath: curDashes
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7712890168230325628, guid: fc5b91e6428c7924ea490ebfb5a138e8, type: 3}
+      propertyPath: wallJumpLim
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7712890168230325628, guid: fc5b91e6428c7924ea490ebfb5a138e8, type: 3}
+      propertyPath: curWallJumps
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7712890168230325628, guid: fc5b91e6428c7924ea490ebfb5a138e8, type: 3}
+      propertyPath: sliderMouseSens
+      value: 
+      objectReference: {fileID: 777784092495472684, guid: a2cf7052dbb6bfe49a6ad003a5906d92, type: 3}
     - target: {fileID: 7712890168230325630, guid: fc5b91e6428c7924ea490ebfb5a138e8, type: 3}
       propertyPath: m_RootOrder
       value: 2

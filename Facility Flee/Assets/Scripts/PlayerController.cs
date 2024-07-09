@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class PlayerController : MonoBehaviour
     public int wallJumpLim;
     public int curWallJumps;
 
+    public Slider sliderMouseSens;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,6 +33,13 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         plrRb = GetComponent<Rigidbody>();
     }
+
+    public void UpdateMouseSens(float value)
+    {
+        mouseSens = value;
+    }
+
+
 
     // Update is called once per frame
     void Update()
