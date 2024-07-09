@@ -16,18 +16,17 @@ public class PlayerController : MonoBehaviour
     public float friction = 0.8f;
 
     private float camZRot = 0;
-    private float camZRotSpd = 0.03f;
-    private float camZRotRange = 2;
-    private float camZRotSpeedFull = 0.03f;
 
-    public int dashLimit = 1;
-    private int currentDashes;
-    public float dashDistance = 50;
+    public int dashLim;
+    public int curDashes;
+    public float dashDist;
+
+    public int wallJumpLim;
+    public int curWallJumps;
 
     // Start is called before the first frame update
     void Start()
     {
-        currentDashes = dashLimit;
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         plrRb = GetComponent<Rigidbody>();
@@ -53,23 +52,7 @@ public class PlayerController : MonoBehaviour
         //Apply the rotations
         transform.rotation = Quaternion.Euler(transform.rotation.x, tarYRotation, transform.rotation.z);
         cam.transform.rotation = Quaternion.Euler(tarXRotation, tarYRotation, camZRot);
-
-        if (Mathf.Abs(Input.GetAxis("Horizontal") + Input.GetAxis("Vertical")) > 0)
-        {
-            camZRot += camZRotSpd;
-            if (camZRot > camZRotRange)
-            {
-                camZRotSpd = -camZRotSpeedFull;
-            }
-            if (camZRot < -camZRotRange)
-            {
-                camZRotSpd = camZRotSpeedFull;
-            }
-        }
-        else
-        {
-            camZRot += (0 - camZRot) / 5;
-        }
+        camZRot += (-Input.GetAxis("Horizontal") * 7 - camZRot) / 25;
 
         cam.GetComponent<Camera>().fieldOfView += (100 - cam.GetComponent<Camera>().fieldOfView) / 25;
 
@@ -103,25 +86,53 @@ public class PlayerController : MonoBehaviour
             Vector3 setVelocity = plrRb.velocity;
             if (isOnWall() && !isGrounded())
             {
-                if (Physics.Raycast(transform.position, transform.right, 0.6f))
+                if (curWallJumps > 0)
                 {
-                    setVelocity = -transform.right * 20;
+                    if (Physics.Raycast(transform.position, transform.right, 0.6f))
+                    {
+                        setVelocity = -transform.right * 20;
+                    }
+                    if (Physics.Raycast(transform.position, -transform.right, 0.6f))
+                    {
+                        setVelocity = transform.right * 20;
+                    }
+                    if (Physics.Raycast(transform.position, transform.forward, 0.6f))
+                    {
+                        setVelocity = -transform.forward * 20;
+                    }
+                    if (Physics.Raycast(transform.position, -transform.forward, 0.6f))
+                    {
+                        setVelocity = transform.forward * 20;
+                    }
+                    transform.Translate(new Vector3(0, 1, 0));
+                    setVelocity.y = jumpForce;
+                    plrRb.velocity = setVelocity;
+                    curWallJumps -= 1;
+                    Debug.Log(curWallJumps);
                 }
-                if (Physics.Raycast(transform.position, -transform.right, 0.6f))
+                else
                 {
-                    setVelocity = transform.right * 20;
+                    if (Physics.Raycast(transform.position, transform.right, 0.6f))
+                    {
+                        setVelocity = -transform.right * 20;
+                    }
+                    if (Physics.Raycast(transform.position, -transform.right, 0.6f))
+                    {
+                        setVelocity = transform.right * 20;
+                    }
+                    if (Physics.Raycast(transform.position, transform.forward, 0.6f))
+                    {
+                        setVelocity = -transform.forward * 20;
+                    }
+                    if (Physics.Raycast(transform.position, -transform.forward, 0.6f))
+                    {
+                        setVelocity = transform.forward * 20;
+                    }
+                    transform.Translate(new Vector3(0, 1, 0));
+                    setVelocity.y = -jumpForce * 3;
+                    plrRb.velocity = setVelocity;
                 }
-                if (Physics.Raycast(transform.position, transform.forward, 0.6f))
-                {
-                    setVelocity = -transform.forward * 20;
-                }
-                if (Physics.Raycast(transform.position, -transform.forward, 0.6f))
-                {
-                    setVelocity = transform.forward * 20;
-                }
-                transform.Translate(new Vector3(0, 1, 0));
-                setVelocity.y = jumpForce;
-                plrRb.velocity = setVelocity;
+
 
             }
             else
@@ -132,25 +143,28 @@ public class PlayerController : MonoBehaviour
 
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftShift) && currentDashes > 0 && !isGrounded())
+        if (Input.GetKeyDown(KeyCode.LeftShift) && curDashes > 0 && !isGrounded())
         {
-            currentDashes--;
+            curDashes--;
             cam.GetComponent<Camera>().fieldOfView = 120;
-            plrRb.velocity = cam.transform.forward * dashDistance;
+            plrRb.velocity = cam.transform.forward * dashDist;
         }
 
-        if (isGrounded() && !isOnWall())
+        if (isGrounded())
         {
-            currentDashes = dashLimit;
+            curDashes = dashLim;
+            curWallJumps = wallJumpLim;
         }
 
 
         //Set cursor lock state depending on what key is pressed
         Cursor.lockState = CursorLockMode.Locked;
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.LeftControl) && !isGrounded())
         {
-            Cursor.lockState = CursorLockMode.None;
+            Vector3 stompVel = plrRb.velocity;
+            stompVel.y = -100;
+            plrRb.velocity = stompVel;
         }
     }
 
