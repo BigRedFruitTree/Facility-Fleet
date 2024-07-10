@@ -107,12 +107,12 @@ public class PlayerController : MonoBehaviour
                     if (Physics.Raycast(transform.position, transform.right, 0.6f))
                     {
                         setVelocity = -transform.right * 20;
-                        camZRot -= 180;
+                        camZRot -= 20;
                     }
                     if (Physics.Raycast(transform.position, -transform.right, 0.6f))
                     {
                         setVelocity = transform.right * 20;
-                        camZRot += 180;
+                        camZRot += 20;
                     }
                     if (Physics.Raycast(transform.position, transform.forward, 0.6f))
                     {
