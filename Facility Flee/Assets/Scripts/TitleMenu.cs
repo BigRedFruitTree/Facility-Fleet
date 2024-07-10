@@ -17,6 +17,7 @@ public class TitleMenu : MonoBehaviour
     void Start()
     {
         playerController = playerPrefab.GetComponent<PlayerController>();
+        Cursor.lockState = CursorLockMode.None;
     }
 
     // Update is called once per frame

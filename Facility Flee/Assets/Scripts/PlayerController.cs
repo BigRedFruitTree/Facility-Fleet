@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -26,6 +27,8 @@ public class PlayerController : MonoBehaviour
     public int wallJumpLim;
     public int curWallJumps;
 
+    // Tempoary
+    public GameObject end;
 
     public Slider sliderMouseSens;
     // Start is called before the first frame update
@@ -36,7 +39,14 @@ public class PlayerController : MonoBehaviour
         plrRb = GetComponent<Rigidbody>();
     }
 
-
+    // Tempoary
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject == end)
+        {
+            SceneManager.LoadScene("UI SCENE");
+        }
+    }
 
     // Update is called once per frame
     void Update()
@@ -114,7 +124,6 @@ public class PlayerController : MonoBehaviour
                     setVelocity.y = jumpForce;
                     plrRb.velocity = setVelocity;
                     curWallJumps -= 1;
-                    Debug.Log(curWallJumps);
                 }
                 else
                 {
