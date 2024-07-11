@@ -27,6 +27,9 @@ public class PlayerController : MonoBehaviour
     public int wallJumpLim;
     public int curWallJumps;
 
+    public float wallJumpIdx = 0;
+    private float wallJumpCamTar = 0;
+
     // Tempoary
     public GameObject end;
 
@@ -37,6 +40,7 @@ public class PlayerController : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         plrRb = GetComponent<Rigidbody>();
+        Physics.gravity = Vector3.down * 15;
     }
 
     // Tempoary
@@ -68,7 +72,15 @@ public class PlayerController : MonoBehaviour
         //Apply the rotations
         transform.rotation = Quaternion.Euler(transform.rotation.x, tarYRotation, transform.rotation.z);
         cam.transform.rotation = Quaternion.Euler(tarXRotation, tarYRotation, camZRot);
-        camZRot += (-Input.GetAxis("Horizontal") * 7 - camZRot) / 25;
+
+        if (wallJumpIdx > 0 || wallJumpIdx < 0)
+        {
+            camZRot += (wallJumpCamTar - camZRot) / 25;
+        } else
+        {
+            camZRot += (-Input.GetAxis("Horizontal") * 7 - camZRot) / 25;
+        }
+
 
         cam.GetComponent<Camera>().fieldOfView += (100 - cam.GetComponent<Camera>().fieldOfView) / 25;
 
@@ -107,19 +119,14 @@ public class PlayerController : MonoBehaviour
                     if (Physics.Raycast(transform.position, transform.right, 0.6f))
                     {
                         setVelocity = -transform.right * 20;
-
-                        for (float wallJumpIdx = 5; wallJumpIdx > 0; wallJumpIdx--)
-                        {
-                            camZRot -= 5;
-                        }
+                        wallJumpIdx = -1;
+                        Debug.Log(wallJumpIdx);
                     }
                     if (Physics.Raycast(transform.position, -transform.right, 0.6f))
                     {
                         setVelocity = transform.right * 20;
-                        for (float wallJumpIdx = 5; wallJumpIdx > 0; wallJumpIdx--)
-                        {
-                            camZRot += 5;
-                        }
+                        wallJumpIdx = 1;
+                        Debug.Log(wallJumpIdx);
                     }
                     if (Physics.Raycast(transform.position, transform.forward, 0.6f))
                     {
@@ -178,6 +185,26 @@ public class PlayerController : MonoBehaviour
         {
             curDashes = dashLim;
             curWallJumps = wallJumpLim;
+        }
+
+        if (wallJumpIdx > 0)
+        {
+            wallJumpIdx++;
+            wallJumpCamTar = wallJumpIdx;
+            if (wallJumpIdx > 30)
+            {
+                wallJumpIdx = 0;
+                wallJumpCamTar = 0;
+            }
+        } else if (wallJumpIdx < 0)
+        {
+            wallJumpIdx--;
+            wallJumpCamTar = wallJumpIdx;
+            if (wallJumpIdx < -30)
+            {
+                wallJumpIdx = 0;
+                wallJumpCamTar = 0;
+            }
         }
 
 
