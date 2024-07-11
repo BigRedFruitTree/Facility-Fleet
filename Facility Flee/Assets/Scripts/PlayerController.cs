@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Audio;
 
 public class PlayerController : MonoBehaviour
 {
@@ -13,6 +14,10 @@ public class PlayerController : MonoBehaviour
     private float tarXRotation = 0;
     private float tarYRotation = 0;
     private Rigidbody plrRb;
+    private AudioSource playerAudio;
+    public AudioClip jump;
+    public AudioClip dash;
+    public AudioClip wallJump;
 
     public float speed;
     public float jumpForce;
@@ -41,6 +46,7 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         plrRb = GetComponent<Rigidbody>();
         Physics.gravity = Vector3.down * 17;
+        playerAudio = GetComponent<AudioSource>();
     }
 
     // Tempoary
@@ -118,60 +124,76 @@ public class PlayerController : MonoBehaviour
                 {
                     if (Physics.Raycast(transform.position, transform.right, 0.6f))
                     {
+                        playerAudio.PlayOneShot(wallJump, 0.6f);
                         setVelocity = -transform.right * 20;
                         wallJumpIdx = -1;
                         Debug.Log(wallJumpIdx);
                     }
                     if (Physics.Raycast(transform.position, -transform.right, 0.6f))
                     {
+                        playerAudio.PlayOneShot(wallJump, 0.6f);
                         setVelocity = transform.right * 20;
                         wallJumpIdx = 1;
                         Debug.Log(wallJumpIdx);
                     }
                     if (Physics.Raycast(transform.position, transform.forward, 0.6f))
                     {
+                        playerAudio.PlayOneShot(wallJump, 0.6f);
                         setVelocity = -transform.forward * 20;
                     }
                     if (Physics.Raycast(transform.position, -transform.forward, 0.6f))
                     {
+                        playerAudio.PlayOneShot(wallJump, 0.6f);
                         setVelocity = transform.forward * 20;
                     }
                     transform.Translate(new Vector3(0, 1, 0));
                     setVelocity.y = jumpForce;
                     plrRb.velocity = setVelocity;
                     curWallJumps -= 1;
+                    playerAudio.PlayOneShot(wallJump, 0.6f);
                 }
                 else
                 {
                     if (Physics.Raycast(transform.position, transform.right, 0.6f))
                     {
+                       
+                        playerAudio.PlayOneShot(jump, 0.6f);
                         setVelocity = -transform.right * 20;
                     }
                     if (Physics.Raycast(transform.position, -transform.right, 0.6f))
                     {
+
+                        playerAudio.PlayOneShot(jump, 0.6f);
                         setVelocity = transform.right * 20;
                     }
                     if (Physics.Raycast(transform.position, transform.forward, 0.6f))
                     {
+
+                        playerAudio.PlayOneShot(jump, 0.6f);
                         setVelocity = -transform.forward * 20;
                     }
                     if (Physics.Raycast(transform.position, -transform.forward, 0.6f))
                     {
+
+                        playerAudio.PlayOneShot(jump, 0.6f);
                         setVelocity = transform.forward * 20;
                     }
                     transform.Translate(new Vector3(0, 1, 0));
                     setVelocity.y = -jumpForce * 3;
                     plrRb.velocity = setVelocity;
+                    playerAudio.PlayOneShot(jump, 0.6f);
                 }
 
 
             }
             else
             {
+
+                playerAudio.PlayOneShot(jump, 0.6f);
                 setVelocity.y = jumpForce;
                 plrRb.velocity = setVelocity;
             }
-
+            
         }
 
         if (Input.GetKeyDown(KeyCode.LeftShift) && curDashes > 0 && !isGrounded())
@@ -179,6 +201,7 @@ public class PlayerController : MonoBehaviour
             curDashes--;
             cam.GetComponent<Camera>().fieldOfView = 120;
             plrRb.velocity = cam.transform.forward * dashDist;
+            playerAudio.PlayOneShot(dash, 0.6f);
         }
 
         if (isGrounded())
