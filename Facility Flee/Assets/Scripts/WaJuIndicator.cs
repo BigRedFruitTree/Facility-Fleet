@@ -7,33 +7,23 @@ public class WaJuIndicator : MonoBehaviour
 {
     private PlayerController playerController;
 
+    public List<GameObject> spriteList;
+
+
     // Start is called before the first frame update
     void Start()
-{
-    playerController = GameObject.Find("Player").GetComponent<PlayerController>();
-}
+    {
+        playerController = GameObject.Find("Player").GetComponent<PlayerController>();
+    }
 
-// Update is called once per frame
-void Update()
-{
-        if (playerController.curWallJumps == 0)
+    // Update is called once per frame
+    void Update()
+    {
+        foreach (var item in spriteList)
         {
-            GetComponent<Image>().color = Color.red;
-        }
-       
-        if (playerController.curWallJumps == 1)
-        {
-            GetComponent<Image>().color = Color.yellow;
+            item.SetActive(false);
         }
 
-        if (playerController.curWallJumps == 2)
-        {
-            GetComponent<Image>().color = Color.green;
-        }
-
-        if (playerController.curWallJumps == 3)
-        {
-            GetComponent<Image>().color = Color.white;
-        }
+        spriteList[playerController.curWallJumps].SetActive(true);
     }
 }
