@@ -48,7 +48,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject == end)
         {
-            SceneManager.LoadScene("UI SCENE");
+            SceneManager.LoadScene("Level");
         }
     }
 

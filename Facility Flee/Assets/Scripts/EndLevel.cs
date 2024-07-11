@@ -27,7 +27,7 @@ public class EndLevel : MonoBehaviour
         {
             // win level, save time if its best time, then move to next level
             saveData.SaveGame();
-            SceneManager.LoadScene("Level2");
+            SceneManager.LoadScene("UI SCENE");
         }
     }
 }

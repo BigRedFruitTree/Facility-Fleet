@@ -29,7 +29,7 @@ public class TitleMenu : MonoBehaviour
     public void PlayPressed()
     {
         titlePanel.SetActive(false);
-        SceneManager.LoadScene("Level");
+        SceneManager.LoadScene("Level2");
     }
 
     public void OptionsPressed()
