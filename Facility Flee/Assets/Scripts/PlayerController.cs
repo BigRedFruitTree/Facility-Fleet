@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         plrRb = GetComponent<Rigidbody>();
-        Physics.gravity = Vector3.down * 15;
+        Physics.gravity = Vector3.down * 17;
     }
 
     // Tempoary
