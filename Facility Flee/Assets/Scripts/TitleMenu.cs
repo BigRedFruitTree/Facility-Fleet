@@ -9,15 +9,39 @@ public class TitleMenu : MonoBehaviour
     public GameObject titlePanel;
     public GameObject optionsPanel;
     public GameObject playerPrefab;
+    public TextMeshProUGUI resetButtonText;
     private PlayerController playerController;
     public Slider slider;
+    public Slider sfxSlider;
+    public Slider musicSlider;
     public TextMeshProUGUI sensitivityDisplay;
+    public TextMeshProUGUI sfxVolumeDisplay;
+    public TextMeshProUGUI musicVolumeDisplay;
 
     // Start is called before the first frame update
     void Start()
     {
         playerController = playerPrefab.GetComponent<PlayerController>();
         Cursor.lockState = CursorLockMode.None;
+    }
+
+    private bool debounce = false;
+    public void ResetDataPressed()
+    {
+        if (debounce == false)
+        {
+            debounce = true;
+            PlayerPrefs.DeleteAll();
+            resetButtonText.text = "Data has been reset";
+            StartCoroutine(DebounceWait());
+        }
+    }
+
+    IEnumerator DebounceWait()
+    {
+        yield return new WaitForSeconds(2);
+        resetButtonText.text = "Reset Data";
+        debounce = false;
     }
 
     // Update is called once per frame
@@ -53,6 +77,22 @@ public class TitleMenu : MonoBehaviour
     {
         float amount = slider.value;
         playerController.mouseSens = amount;
-        sensitivityDisplay.text = amount.ToString();
+        sensitivityDisplay.text = playerController.mouseSens.ToString();
+    }
+
+    public void SfxSliderChanged()
+    {
+        AudioSource sfx = playerPrefab.GetComponent<AudioSource>();
+        float amount = sfxSlider.value;
+        sfx.volume = amount;
+        sfxVolumeDisplay.text = sfx.volume.ToString();
+    }
+
+    public void MusicSliderChanged()
+    {
+        AudioSource music = playerController.cam.GetComponent<AudioSource>();
+        float amount = musicSlider.value;
+        music.volume = amount;
+        musicVolumeDisplay.text = music.volume.ToString();
     }
 }
