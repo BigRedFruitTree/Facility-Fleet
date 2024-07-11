@@ -20,7 +20,7 @@ public class Respawn : MonoBehaviour
 
             GameObject.Find("Canvas").GetComponent<LevelTime>().time = 0;
             
-            Debug.Log("Touching bad");
+            
         }
     }
     // Update is called once per frame

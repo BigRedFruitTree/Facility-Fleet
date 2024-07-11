@@ -127,14 +127,14 @@ public class PlayerController : MonoBehaviour
                         playerAudio.PlayOneShot(wallJump, 0.6f);
                         setVelocity = -transform.right * 20;
                         wallJumpIdx = -1;
-                        Debug.Log(wallJumpIdx);
+                        
                     }
                     if (Physics.Raycast(transform.position, -transform.right, 0.6f))
                     {
                         playerAudio.PlayOneShot(wallJump, 0.6f);
                         setVelocity = transform.right * 20;
                         wallJumpIdx = 1;
-                        Debug.Log(wallJumpIdx);
+                       
                     }
                     if (Physics.Raycast(transform.position, transform.forward, 0.6f))
                     {
