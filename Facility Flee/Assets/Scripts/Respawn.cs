@@ -17,6 +17,8 @@ public class Respawn : MonoBehaviour
         if (collision.gameObject.CompareTag("Bad"))
         {
             transform.position = spawn.transform.position;
+
+            GameObject.Find("Canvas").GetComponent<LevelTime>().time = 0;
             
             Debug.Log("Touching bad");
         }

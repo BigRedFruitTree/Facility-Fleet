@@ -17,12 +17,14 @@ public class TitleMenu : MonoBehaviour
     public TextMeshProUGUI sensitivityDisplay;
     public TextMeshProUGUI sfxVolumeDisplay;
     public TextMeshProUGUI musicVolumeDisplay;
+    public TextMeshProUGUI bestTimeText;
 
     // Start is called before the first frame update
     void Start()
     {
         playerController = playerPrefab.GetComponent<PlayerController>();
         Cursor.lockState = CursorLockMode.None;
+        bestTimeText.text = "BEST TIME: " + SaveData.saveTime;
     }
 
     private bool debounce = false;

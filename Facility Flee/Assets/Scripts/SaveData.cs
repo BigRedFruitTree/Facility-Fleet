@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class SaveData : MonoBehaviour
 {
-    private int saveTime;
+    public static int saveTime;
 
     // Start is called before the first frame update
     void Start()
