@@ -278,4 +278,6 @@ public class PlayerController : MonoBehaviour
             Physics.Raycast(transform.position, -transform.forward, 0.6f) ||
             Physics.Raycast(transform.position, transform.forward, 0.6f);
     }
+
+    
 }

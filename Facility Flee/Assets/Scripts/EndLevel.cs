@@ -28,6 +28,8 @@ public class EndLevel : MonoBehaviour
             // win level, save time if its best time, then move to next level
             saveData.SaveGame();
             SceneManager.LoadScene("UI SCENE");
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
     }
 }

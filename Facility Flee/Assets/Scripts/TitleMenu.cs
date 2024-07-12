@@ -26,7 +26,7 @@ public class TitleMenu : MonoBehaviour
     {
         playerController = playerPrefab.GetComponent<PlayerController>();
         Cursor.lockState = CursorLockMode.None;
-        bestTimeText.text = "BEST TIME: " + SaveData.saveTime;
+        bestTimeText.text = "BEST TIME: " + PlayerPrefs.GetInt("Level bestTime", 0).ToString();
     }
 
     private bool debounce = false;
