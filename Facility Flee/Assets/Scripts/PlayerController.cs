@@ -9,6 +9,10 @@ public class PlayerController : MonoBehaviour
 {
     public GameObject cam;
     public GameObject Acid;
+    public GameObject pausePanel;
+    public GameObject resumeButton;
+    public GameObject pausedText;
+    public GameObject playerPrefab;
     private CharacterController characterController;
     public float mouseSens;
     private float tarXRotation = 0;
@@ -18,6 +22,7 @@ public class PlayerController : MonoBehaviour
     public AudioClip jump;
     public AudioClip dash;
     public AudioClip wallJump;
+    public bool playingGame;
 
     public float speed;
     public float jumpForce;
@@ -47,6 +52,7 @@ public class PlayerController : MonoBehaviour
         plrRb = GetComponent<Rigidbody>();
         Physics.gravity = Vector3.down * 17;
         playerAudio = GetComponent<AudioSource>();
+        
     }
 
     // Tempoary
@@ -55,6 +61,7 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject == end)
         {
             SceneManager.LoadScene("Level");
+            playerPrefab.GetComponent<PlayerController>().playingGame = true;
         }
     }
 
@@ -89,7 +96,6 @@ public class PlayerController : MonoBehaviour
 
 
         cam.GetComponent<Camera>().fieldOfView += (100 - cam.GetComponent<Camera>().fieldOfView) / 25;
-
 
 
         //Add velocity to the player depending on the movement key presses
@@ -196,6 +202,15 @@ public class PlayerController : MonoBehaviour
             
         }
 
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            pausePanel.SetActive(true);
+            pausedText.SetActive(true);
+            resumeButton.SetActive(true);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+
         if (Input.GetKeyDown(KeyCode.LeftShift) && curDashes > 0 && !isGrounded())
         {
             curDashes--;
@@ -232,12 +247,24 @@ public class PlayerController : MonoBehaviour
 
 
         //Set cursor lock state depending on what key is pressed
-        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.None;
 
         
+        
     }
-  
 
+    public void Resume()
+    {
+        pausePanel.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    public void QuitButtonPressed()
+    {
+        pausePanel.SetActive(false);
+        SceneManager.LoadScene("UI SCENE");
+    }
 
     bool isGrounded()
     {

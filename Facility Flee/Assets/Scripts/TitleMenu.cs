@@ -9,6 +9,7 @@ public class TitleMenu : MonoBehaviour
     public GameObject titlePanel;
     public GameObject optionsPanel;
     public GameObject playerPrefab;
+    public GameObject pausePanel;
     public TextMeshProUGUI resetButtonText;
     private PlayerController playerController;
     public Slider slider;
@@ -18,6 +19,7 @@ public class TitleMenu : MonoBehaviour
     public TextMeshProUGUI sfxVolumeDisplay;
     public TextMeshProUGUI musicVolumeDisplay;
     public TextMeshProUGUI bestTimeText;
+    public bool playingGame;
 
     // Start is called before the first frame update
     void Start()
@@ -54,6 +56,7 @@ public class TitleMenu : MonoBehaviour
 
     public void PlayPressed()
     {
+        
         titlePanel.SetActive(false);
         SceneManager.LoadScene("Level2");
     }
@@ -97,4 +100,5 @@ public class TitleMenu : MonoBehaviour
         music.volume = amount;
         musicVolumeDisplay.text = music.volume.ToString();
     }
+    
 }
